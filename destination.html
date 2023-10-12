@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Confirmation Page</title>
+    </head>
+    <body>
+        <h1>
+            Welcome to the Linked Lab!
+        </h1>
+        <p id="confirmation"></p>
+            <script>
+                const queryString = window.location.search;
+                const urlParams = new URLSearchParams(queryString);
+                const destination = urlParams.get('destination');
+                console.log(destination);
+                const confirmationMsg = document.getElementById("confirmation");
+                confirmationMsg.innerHTML = "Is the person you are looking for " + destination + "?";
+            </script>
+    </body>
+</html>
