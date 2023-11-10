@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript" src="script/jquery-3.7.1.js"></script>
+  <script type="text/javascript" src="script/jquery-csv-main/src/jquery.csv.min.js"></script>
+</head>
+<body>
+  <script type="text/javascript">
+    console.log("1");
+    $.get("data/test.csv", function(CSVdata) {
+      // CSVdata is populated with the file contents...
+      // ...ready to be converted into an Array
+      data = $.csv.toArray(CSVdata);
+      console.log("1");
+    });
+  </script>
+</body>
+</html>

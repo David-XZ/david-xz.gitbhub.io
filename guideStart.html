@@ -1,43 +1,62 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>rosjs Publisher Subscriber Tutorial</title>
-<!-- REQUIRED scripts -->
-<script type="text/javascript" src="js/jquery/jquery-latest.js"></script>
-<script type="text/javascript" src="js/ros/ros.js"></script>
-<script type="text/javascript" src="js/ros/common.js"></script>
-<script>
-function log(msg) {$('#log').append(msg.toString() + '<br>');  }
-function start()
-{
-  log("Connecting to rosbridge.");
-  var node = new ros.NodeHandle("ws://localhost:9090");
-  node.setOnClose(function(e) {
-    log("Disconnected or Can't Connect.");
-  });
-  node.setOnError(function(e) {
-    log("Unknown error!");
-  });
-  node.setOnOpen(function(e) {
-    log("Connection to rosbridge established.");
+  <script type="text/javascript" src="script/eventemitter2.js"></script>
+  <script type="text/javascript" src="script/roslib.min.js"></script>
 
-   //publish the time every 1000 miliseconds
+  <script type="text/javascript">
 
-   setInterval(function(){
-           var currentTime=new Date();
-           var hours=currentTime.getHours();
-           var minutes=currentTime.getMinutes();
-           var seconds=currentTime.getSeconds();
-           var timeMessage="It is now "+ hours+ ":" + minutes + ":"+ seconds ;
-           node.publish('/talker', 'std_msgs/String', ros.json({data: timeMessage}));
+    // connect to rosbridge
+    var ros = new ROSLIB.Ros({
+      url : 'ws://192.168.1.126:9090'
+    });
 
-   }, 1000);
-   node.subscribe('/talker', 'std_msgs/String', function(msg){  log(msg.data) });
-  });
-}
-</script>
+    // connection status
+    ros.on('connection', function(){
+      console.log('Connected to websocket server.');
+    });
+
+    ros.on('error', function(error){
+      console.log('Error connecting to websocket server: ', error);
+    });
+
+    ros.on('close', function(){
+      console.log('Connection to websocket server closed.');
+    });
+
+    // goal topic publisher
+    var goal_pub = new ROSLIB.Topic({
+      ros : ros,
+      name : '/move_base_simple/goal',
+      messageType : 'geometry_msgs/PoseStamped'
+    });
+
+    // find destination pose
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const destination = urlParams.get('destination');
+
+
+
+    // initiate goal msg
+    var goal = new ROSLIB.Message({
+      header : {
+        frame_id : map
+      },
+      pose : {
+        Pose : {
+
+        },
+        Orientation : {
+
+        }
+      }
+    });
+
+    // publish goal
+    goal_pub.publish(goal);
+  </script>
 </head>
-<body onload="start()" style="margin:0;padding:0;background-color:white;overflow:hidden">
-<div style="font-family: fixed-width; font-size: small;" id="log"></div>
+<body>
 </body>
 </html>
